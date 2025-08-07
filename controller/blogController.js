@@ -83,7 +83,9 @@ const updateBlog = async (req, res) => {
 
     // Check authorization
     if (blog.author.toString() !== req.user.id) {
-      return res.status(403).json({ message: "Not authorized to update this blog" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this blog" });
     }
 
     // Proceed to update
@@ -98,10 +100,12 @@ const updateBlog = async (req, res) => {
 };
 
 
+
 module.exports = {
   createBlog,
   getAllBlogs,
   getBlogById,
   deleteBlog,
   updateBlog,
+ 
 };

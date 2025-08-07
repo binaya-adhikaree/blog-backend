@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-require('./userModel')
+require("./userModel");
 
 const blogSchema = new mongoose.Schema(
   {
@@ -14,6 +14,13 @@ const blogSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    reactions: {
+      love: {
+        type: Number,
+        default: 0,
+      },
+    },
+    favourite: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -23,5 +30,5 @@ const blogSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Blog = new mongoose.model("Blog", blogSchema);
+const Blog = mongoose.model("Blog", blogSchema);
 module.exports = Blog;

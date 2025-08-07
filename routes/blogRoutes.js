@@ -9,6 +9,8 @@ const {
   getBlogById,
   deleteBlog,
   updateBlog,
+  toggleFavourite,
+  toggleLove,
 } = require("../controller/blogController");
 
 router.post("/create", authenticateUser, upload.single("image"), createBlog);
@@ -16,5 +18,6 @@ router.delete("/:id", authenticateUser, deleteBlog);
 router.get("/all", getAllBlogs);
 router.get("/:id", getBlogById);
 router.put("/update/:id", authenticateUser, updateBlog);
+
 
 module.exports = router;
