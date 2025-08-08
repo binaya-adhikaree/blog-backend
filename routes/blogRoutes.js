@@ -11,13 +11,21 @@ const {
   updateBlog,
   toggleFavourite,
   toggleLove,
+  getFavouriteBlogs,
 } = require("../controller/blogController");
 
 router.post("/create", authenticateUser, upload.single("image"), createBlog);
-router.delete("/:id", authenticateUser, deleteBlog);
-router.get("/all", getAllBlogs);
-router.get("/:id", getBlogById);
-router.put("/update/:id", authenticateUser, updateBlog);
 
+router.get("/favourites", authenticateUser, getFavouriteBlogs);
+router.post("/favourite/:id", authenticateUser, toggleFavourite);
+
+router.get("/all", getAllBlogs);
+
+router.post("/react/:id", authenticateUser, toggleLove);
+
+router.put("/update/:id", authenticateUser, updateBlog);
+router.delete("/:id", authenticateUser, deleteBlog);
+
+router.get("/:id", getBlogById);
 
 module.exports = router;

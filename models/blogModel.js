@@ -20,7 +20,8 @@ const blogSchema = new mongoose.Schema(
         default: 0,
       },
     },
-    favourite: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    favouritedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    lovedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

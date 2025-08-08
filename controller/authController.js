@@ -40,7 +40,7 @@ const handleRegister = async (req, res) => {
 };
 
 const handleLogin = async (req, res) => {
-  const { email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
   try {
     if (!email || !password) {

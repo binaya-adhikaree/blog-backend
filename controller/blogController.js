@@ -21,7 +21,7 @@ const createBlog = async (req, res) => {
 const getAllBlogs = async (req, res) => {
   try {
     const blogs = await Blog.find()
-      .populate("author", "firstName lastName")
+      .populate("author", "firstName lastName email")
       .sort({ createdAt: -1 });
     res.status(200).json(blogs);
   } catch (error) {
@@ -99,7 +99,86 @@ const updateBlog = async (req, res) => {
   }
 };
 
+const toggleLove = async (req, res) => {
+  const blogId = req.params.id;
+  const userId = req.user.id;
 
+  try {
+    const blog = await Blog.findById(blogId);
+    if (!blog) return res.status(404).json({ message: "Blog not found" });
+
+    const alreadyLiked = blog.lovedBy.some(
+      (id) => id.toString() === userId.toString()
+    );
+
+    const updateOperation = alreadyLiked
+      ? {
+          $pull: { lovedBy: userId },
+          $inc: { "reactions.love": -1 },
+        }
+      : {
+          $addToSet: { lovedBy: userId },
+          $inc: { "reactions.love": 1 },
+        };
+
+    const updatedBlog = await Blog.findByIdAndUpdate(blogId, updateOperation, {
+      new: true,
+    });
+
+    res.status(200).json({
+      message: alreadyLiked ? "unliked the blog" : "liked the blog",
+      totalLovers: Math.max(0, updatedBlog.reactions.love),
+      lovedByUser: !alreadyLiked,
+    });
+  } catch (error) {
+    console.error("Toggle love error", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const toggleFavourite = async (req, res) => {
+  const blogId = req.params.id;
+  const userId = req.user.id;
+
+  try {
+    const blog = await Blog.findById(blogId);
+
+    if (!blog) return res.status(404).json({ error: "Blog not found" });
+
+    const index = blog.favouritedBy.indexOf(userId);
+
+    if (index === -1) {
+      blog.favouritedBy.push(userId);
+    } else {
+      blog.favouritedBy.splice(index, 1);
+    }
+
+    await blog.save();
+    res.status(200).json({
+      success: true,
+      favouritedBy: blog.favouritedBy,
+      isFavourited: index === -1,
+    });
+  } catch (err) {
+    console.error("Toggle favourite error:", err);
+    res.status(500).json({ error: "Failed to toggle favourite" });
+  }
+};
+
+const getFavouriteBlogs = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const blogs = await Blog.find({ favouritedBy: userId }).populate(
+      "author",
+      "firstName lastName"
+    );
+    res.status(200).json({ blogs });
+  } catch (error) {
+    console.error("Get favourites error", error);
+    res.status(500).json({ error: "failed to get favourite" });
+  }
+};
 
 module.exports = {
   createBlog,
@@ -107,5 +186,7 @@ module.exports = {
   getBlogById,
   deleteBlog,
   updateBlog,
- 
+  toggleLove,
+  toggleFavourite,
+  getFavouriteBlogs,
 };
