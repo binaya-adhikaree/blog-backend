@@ -17,13 +17,16 @@ app.use(
 const authRoutes = require("./routes/authRoute");
 const blogRoutes = require("./routes/blogRoutes");
 const userRoute = require("./routes/userRoute");
+const commentRoute = require("./routes/commentRoutes");
 
 app.use("/api", authRoutes);
 app.use("/blog", blogRoutes);
 
 app.use("/uploads", express.static("uploads"));
 
-app.use("/api", userRoute);
+app.use("/api/user", userRoute);
+
+app.use("/api/comments", commentRoute);
 
 app.get("/", (req, res) => {
   res.send("hello from homepage");
