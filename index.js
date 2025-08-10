@@ -33,6 +33,7 @@ app.use("/api/user", userRoute);
 
 app.use("/api/comments", commentRoute);
 
+
 app.get("/", (req, res) => {
   res.send("hello from homepage");
 });
